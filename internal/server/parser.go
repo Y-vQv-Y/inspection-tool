@@ -25,7 +25,7 @@ func extractOSFamily(osRelease string) string {
 	case strings.Contains(s, "linux"):
 		return "linux"
 	default:
-		return "unknown"
+		return "linux"
 	}
 }
 
@@ -40,7 +40,7 @@ func extractOSVersion(osRelease string) string {
 			}
 		}
 	}
-	return "linux"
+	return "unknown"
 }
 
 // parseUptime 解析运行时间
