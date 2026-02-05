@@ -63,7 +63,7 @@ func runServerInspection(opts *ServerOptions) error {
 	fmt.Println("========================================")
 	fmt.Printf("目标主机: %s:%d\n", opts.Host, opts.Port)
 	fmt.Printf("用户: %s\n", opts.User)
-	fmt.Println("========================================\n")
+	fmt.Println("========================================")
 
 	// 验证配置
 	if err := utils.ValidateConfig(opts.Host, opts.User, opts.Password, opts.Port); err != nil {
@@ -88,7 +88,7 @@ func runServerInspection(opts *ServerOptions) error {
 	if err := sshClient.TestConnection(); err != nil {
 		return fmt.Errorf("连接测试失败: %w", err)
 	}
-	fmt.Println("✓ 连接成功\n")
+	fmt.Println("连接成功")
 
 	// 创建巡检器
 	inspector, err := server.NewInspector(sshClient)
@@ -103,7 +103,7 @@ func runServerInspection(opts *ServerOptions) error {
 	if err != nil {
 		return fmt.Errorf("巡检失败: %w", err)
 	}
-	fmt.Println("✓ 巡检完成\n")
+	fmt.Println("巡检完成")
 
 	// 生成报告
 	fmt.Println("正在生成报告...")
@@ -116,7 +116,7 @@ func runServerInspection(opts *ServerOptions) error {
 	// 打印摘要
 	report.PrintServerSummary(serverReport)
 
-	fmt.Printf("\n✓ 报告已保存: %s\n", reportPath)
+	fmt.Printf("\n 报告已保存: %s\n", reportPath)
 
 	// 根据问题数量返回退出码
 	if len(serverReport.Issues) > 0 {
