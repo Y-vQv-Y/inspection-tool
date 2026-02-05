@@ -439,8 +439,8 @@ func (i *Inspector) collectPodMetrics(ctx context.Context, report *models.K8sRep
 			continue
 		}
 
-		for i := range pods.Items {
-			pod := &pods.Items[i]
+		for idx := range pods.Items {
+			pod := &pods.Items[idx]
 			var metrics *metricsv1beta1.PodMetrics
 			if podMetricsList != nil && podMetricsList[ns] != nil {
 				metrics = podMetricsList[ns][pod.Name]
