@@ -1,0 +1,84 @@
+# 巡检工具配置文件
+
+# 服务器巡检配置
+server:
+  # SSH连接超时时间(秒)
+  timeout: 30
+  # 巡检间隔(秒)
+  interval: 60
+  # 并发巡检数量
+  concurrency: 5
+  
+  # 阈值配置
+  thresholds:
+    cpu:
+      load_1min: 8.0
+      load_5min: 6.0
+      load_15min: 4.0
+      usage_percent: 80.0
+      context_switch_rate: 10000
+    memory:
+      usage_percent: 85.0
+      available_mb: 1024
+    disk:
+      usage_percent: 85.0
+      inode_usage_percent: 80.0
+      iowait_percent: 30.0
+      io_util_percent: 80.0
+    network:
+      packet_error_rate: 0.01
+      retransmit_rate: 0.05
+    system:
+      file_handle_usage_percent: 80.0
+      blocked_tasks: 10
+      time_offset_seconds: 5
+
+# Kubernetes巡检配置
+k8s:
+  # kubeconfig路径
+  kubeconfig: "~/.kube/config"
+  # 命名空间过滤(为空则检查所有)
+  namespaces: []
+  # 检查间隔(秒)
+  interval: 60
+  
+  # 阈值配置
+  thresholds:
+    node:
+      cpu_usage_percent: 80.0
+      memory_usage_percent: 85.0
+      disk_usage_percent: 85.0
+      pod_count_percent: 90.0
+    pod:
+      cpu_usage_percent: 80.0
+      memory_usage_percent: 80.0
+      restart_count: 5
+    etcd:
+      db_size_mb: 8192
+      leader_changes: 3
+
+# 报告配置
+report:
+  # 输出格式: json, yaml, html
+  format: json
+  # 输出路径
+  output_dir: "./reports"
+  # 是否包含详细信息
+  detailed: true
+  # 历史记录保留天数
+  retention_days: 30
+
+# 告警配置
+alert:
+  enabled: false
+  # 告警接收者(可选: webhook, email)
+  receivers:
+    webhook:
+      enabled: false
+      url: ""
+    email:
+      enabled: false
+      smtp_host: ""
+      smtp_port: 587
+      from: ""
+      to: []

@@ -19,8 +19,6 @@ go.work
 
 # Reports
 reports/
-*.json
-*.yaml
 
 # IDE
 .idea/
@@ -32,10 +30,6 @@ reports/
 # OS
 .DS_Store
 Thumbs.db
-
-# Configs (may contain sensitive info)
-configs/local.yaml
-configs/production.yaml
 
 # Logs
 *.log
