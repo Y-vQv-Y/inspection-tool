@@ -1,0 +1,46 @@
+# Binaries
+inspection-tool
+inspection-tool-*
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary
+*.test
+
+# Output of go coverage tool
+*.out
+coverage.out
+
+# Go workspace file
+go.work
+
+# Reports
+reports/
+*.json
+*.yaml
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Configs (may contain sensitive info)
+configs/local.yaml
+configs/production.yaml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
