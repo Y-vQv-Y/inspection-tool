@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"inspection-tool/internal/server"
 	"inspection-tool/internal/ssh"
-	"inspection-tool/pkg/models"
 	"inspection-tool/pkg/report"
 	"inspection-tool/pkg/utils"
 	"time"
