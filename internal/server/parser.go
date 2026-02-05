@@ -40,7 +40,7 @@ func extractOSVersion(osRelease string) string {
 			}
 		}
 	}
-	return "unknown"
+	return "linux"
 }
 
 // parseUptime 解析运行时间
