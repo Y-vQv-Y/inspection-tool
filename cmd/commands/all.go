@@ -74,7 +74,7 @@ func runAllInspection(opts *AllOptions) error {
 	fmt.Println("开始综合巡检")
 	fmt.Println("========================================")
 	fmt.Printf("时间: %s\n", time.Now().Format("2006-01-02 15:04:05"))
-	fmt.Println("========================================\n")
+	fmt.Println("========================================")
 
 	fullReport := &models.InspectionReport{
 		Timestamp: time.Now(),
@@ -118,7 +118,7 @@ func runAllInspection(opts *AllOptions) error {
 	hosts := collectHosts(opts, k8sReport)
 	
 	if len(hosts) == 0 {
-		fmt.Println("警告: 没有可巡检的服务器\n")
+		fmt.Println("警告: 没有可巡检的服务器")
 	} else {
 		fmt.Printf("准备巡检 %d 台服务器\n", len(hosts))
 		
