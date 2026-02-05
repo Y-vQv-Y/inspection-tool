@@ -9,17 +9,24 @@ import (
 
 // extractOSFamily 提取操作系统家族
 func extractOSFamily(osRelease string) string {
-	osRelease = strings.ToLower(osRelease)
-	if strings.Contains(osRelease, "ubuntu") {
-		return "ubuntu"
-	} else if strings.Contains(osRelease, "centos") {
-		return "centos"
-	} else if strings.Contains(osRelease, "redhat") || strings.Contains(osRelease, "rhel") {
+	s := strings.ToLower(osRelease)
+
+	switch {
+	case strings.Contains(s, "red hat"),
+		strings.Contains(s, "redhat"),
+		strings.Contains(s, "rhel"):
 		return "redhat"
-	} else if strings.Contains(osRelease, "debian") {
+	case strings.Contains(s, "centos"):
+		return "centos"
+	case strings.Contains(s, "ubuntu"):
+		return "ubuntu"
+	case strings.Contains(s, "debian"):
 		return "debian"
+	case strings.Contains(s, "linux"):
+		return "linux"
+	default:
+		return "unknown"
 	}
-	return "linux"
 }
 
 // extractOSVersion 提取操作系统版本
