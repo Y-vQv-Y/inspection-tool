@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"inspection-tool/pkg/models"
 	"math"
 	"strconv"

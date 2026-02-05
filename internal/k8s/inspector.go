@@ -12,6 +12,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	metricsv1beta1 "k8s.io/metrics/pkg/apis/metrics/v1beta1"
 	metricsv "k8s.io/metrics/pkg/client/clientset/versioned"
 )
 
@@ -190,11 +191,11 @@ func (i *Inspector) collectNodeMetrics(ctx context.Context, report *models.K8sRe
 	}
 
 	// 获取节点指标(如果metrics server可用)
-	var nodeMetrics map[string]*metricsv.NodeMetrics
+	var nodeMetrics map[string]*metricsv1beta1.NodeMetrics
 	if i.metricsClientset != nil {
 		metrics, err := i.metricsClientset.MetricsV1beta1().NodeMetricses().List(ctx, metav1.ListOptions{})
 		if err == nil {
-			nodeMetrics = make(map[string]*metricsv.NodeMetrics)
+			nodeMetrics = make(map[string]*metricsv1beta1.NodeMetrics)
 			for idx := range metrics.Items {
 				item := &metrics.Items[idx]
 				nodeMetrics[item.Name] = item
@@ -224,7 +225,7 @@ func (i *Inspector) collectNodeMetrics(ctx context.Context, report *models.K8sRe
 }
 
 // parseNodeMetrics 解析节点指标
-func (i *Inspector) parseNodeMetrics(node corev1.Node, metrics *metricsv.NodeMetrics, podCount int) models.NodeMetrics {
+func (i *Inspector) parseNodeMetrics(node corev1.Node, metrics *metricsv1beta1.NodeMetrics, podCount int) models.NodeMetrics {
 	nm := models.NodeMetrics{
 		Name:             node.Name,
 		Ready:            false,
@@ -290,14 +291,12 @@ func (i *Inspector) parseNodeMetrics(node corev1.Node, metrics *metricsv.NodeMet
 // collectAPIServerMetrics 收集API Server指标
 func (i *Inspector) collectAPIServerMetrics(ctx context.Context, report *models.K8sReport) error {
 	// 尝试访问health端点
-	healthStatus := &corev1.ComponentStatus{}
-	_, err := i.clientset.Discovery().RESTClient().Get().
+	result := i.clientset.Discovery().RESTClient().Get().
 		AbsPath("/healthz").
-		Do(ctx).
-		Into(healthStatus)
+		Do(ctx)
 
 	report.APIServerStatus = models.APIServerMetrics{
-		Healthy: err == nil,
+		Healthy: result.Error() == nil,
 		Version: report.ClusterInfo.Version,
 	}
 
@@ -419,13 +418,13 @@ func (i *Inspector) collectPodMetrics(ctx context.Context, report *models.K8sRep
 	}
 
 	// 获取Pod指标
-	var podMetricsList map[string]map[string]*metricsv.PodMetrics
+	var podMetricsList map[string]map[string]*metricsv1beta1.PodMetrics
 	if i.metricsClientset != nil {
-		podMetricsList = make(map[string]map[string]*metricsv.PodMetrics)
+		podMetricsList = make(map[string]map[string]*metricsv1beta1.PodMetrics)
 		for _, ns := range namespaces {
 			metrics, err := i.metricsClientset.MetricsV1beta1().PodMetricses(ns).List(ctx, metav1.ListOptions{})
 			if err == nil {
-				podMetricsList[ns] = make(map[string]*metricsv.PodMetrics)
+				podMetricsList[ns] = make(map[string]*metricsv1beta1.PodMetrics)
 				for idx := range metrics.Items {
 					item := &metrics.Items[idx]
 					podMetricsList[ns][item.Name] = item
@@ -440,13 +439,14 @@ func (i *Inspector) collectPodMetrics(ctx context.Context, report *models.K8sRep
 			continue
 		}
 
-		for _, pod := range pods.Items {
-			var metrics *metricsv.PodMetrics
+		for i := range pods.Items {
+			pod := &pods.Items[i]
+			var metrics *metricsv1beta1.PodMetrics
 			if podMetricsList != nil && podMetricsList[ns] != nil {
 				metrics = podMetricsList[ns][pod.Name]
 			}
 
-			podMetric := i.parsePodMetrics(pod, metrics)
+			podMetric := i.parsePodMetrics(*pod, metrics)
 			report.Pods = append(report.Pods, podMetric)
 		}
 	}
@@ -455,7 +455,7 @@ func (i *Inspector) collectPodMetrics(ctx context.Context, report *models.K8sRep
 }
 
 // parsePodMetrics 解析Pod指标
-func (i *Inspector) parsePodMetrics(pod corev1.Pod, metrics *metricsv.PodMetrics) models.PodMetrics {
+func (i *Inspector) parsePodMetrics(pod corev1.Pod, metrics *metricsv1beta1.PodMetrics) models.PodMetrics {
 	pm := models.PodMetrics{
 		Name:       pod.Name,
 		Namespace:  pod.Namespace,
