@@ -74,7 +74,7 @@ func runK8sInspection(opts *K8sOptions) error {
 	} else {
 		fmt.Println("命名空间: 全部")
 	}
-	fmt.Println("========================================\n")
+	fmt.Println("========================================")
 
 	// 解析命名空间
 	var namespaces []string
@@ -95,7 +95,7 @@ func runK8sInspection(opts *K8sOptions) error {
 	if err != nil {
 		return fmt.Errorf("创建K8s巡检器失败: %w", err)
 	}
-	fmt.Println("✓ 连接成功\n")
+	fmt.Println("连接成功")
 
 	// 执行巡检
 	fmt.Println("正在执行集群巡检...")
@@ -103,7 +103,7 @@ func runK8sInspection(opts *K8sOptions) error {
 	if err != nil {
 		return fmt.Errorf("K8s巡检失败: %w", err)
 	}
-	fmt.Println("✓ 集群巡检完成\n")
+	fmt.Println("集群巡检完成")
 
 	// 如果需要巡检worker节点
 	if opts.InspectWorkers && opts.SSHPassword != "" {
@@ -111,7 +111,7 @@ func runK8sInspection(opts *K8sOptions) error {
 		if err := inspectWorkerNodes(k8sReport, opts); err != nil {
 			fmt.Printf("警告: Worker节点巡检失败: %v\n", err)
 		} else {
-			fmt.Println("✓ Worker节点巡检完成\n")
+			fmt.Println("Worker节点巡检完成")
 		}
 	}
 
@@ -126,7 +126,7 @@ func runK8sInspection(opts *K8sOptions) error {
 	// 打印摘要
 	report.PrintK8sSummary(k8sReport)
 
-	fmt.Printf("\n✓ 报告已保存: %s\n", reportPath)
+	fmt.Printf("\n报告已保存: %s\n", reportPath)
 
 	// 根据问题数量返回退出码
 	if len(k8sReport.Issues) > 0 {
